@@ -107,3 +107,11 @@ venv.bak/
 .idea
 
 __pycache__/
+
+*.jpg
+
+*.png
+
+*.mov
+
+*.avi
