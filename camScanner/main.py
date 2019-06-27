@@ -108,7 +108,7 @@ cv2.namedWindow("Contour")
 cv2.setMouseCallback("Contour", updateScreenCnt)
 
 while True:
-    cv2.drawContours(image, [paperPoints], -1, (0, 0, 255), 3)
+    cv2.drawContours(image, [paperPoints], -1, (0, 0, 255), 1)
     cv2.imshow("Contour", image)
     key = cv2.waitKey(1) & 0xFF
 
