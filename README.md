@@ -1,1 +1,1 @@
-# OpenCV-EFFECT
+# AI-miniProject2
