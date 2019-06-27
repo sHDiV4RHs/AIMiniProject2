@@ -57,7 +57,7 @@ def transformOfRectangle(image, pts):
 
 
 # Load the image #
-imageAddress = 'images/page.jpg'
+imageAddress = 'img.jpg'
 image = cv2.imread(imageAddress)
 desiredH = 700
 ratio = image.shape[0] / desiredH
@@ -69,7 +69,7 @@ image = cv2.resize(image, (desiredW, desiredH),
 
 # Pre processing & edge detection #
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-gray = cv2.GaussianBlur(gray, (5, 5), 0)
+# gray = cv2.GaussianBlur(gray, (5, 5), 0)
 edged = cv2.Canny(gray, 75, 200)
 
 # cv2.imshow("Image", image)
@@ -90,6 +90,16 @@ for c in cnts:
     if len(approx) == 4:  # rect
         paperPoints = approx
         break
+if paperPoints is None:
+    print("Auto detection of the corners failed. "
+          "Please do it manually.")
+    paperPoints = np.array([
+        [[int(desiredW/4), int(desiredH/4)]],
+        [[int(3*desiredW/4), int(desiredH/4)]],
+        [[int(3*desiredW/4), int(3*desiredH/4)]],
+        [[int(desiredW/4), int(3*desiredH/4)]],
+    ])
+
 print("Please edit the corners of the paper if"
       " needed by click on the pic.")
 print("When you feel ok with the corners press s.")
@@ -115,6 +125,7 @@ warped = transformOfRectangle(orig, paperPoints.reshape(4, 2) * ratio)
 warped = cv2.cvtColor(warped, cv2.COLOR_BGR2GRAY)
 T = skimage.filters.threshold_local(warped, 11, offset=10, method="gaussian")
 warped = (warped > T).astype("uint8") * 255
+cv2.imwrite('output.jpg', warped)
 
 desiredH = 700
 desiredW = int(orig.shape[1] * desiredH / orig.shape[0])
