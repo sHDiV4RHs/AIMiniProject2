@@ -2,7 +2,7 @@ from __future__ import print_function
 import sys
 import numpy as np
 import cv2
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 
 np.set_printoptions(threshold=sys.maxsize)
 
@@ -25,16 +25,14 @@ def grabCut(img):
     return img
 
 
-def testGrabCutOnImage():
+def testGrabCutOnImage(fileName):
     ### Test grabCut on image ###
-    img = cv2.imread('myHand1.jpg')
-    img = cv2.resize(img, (128 * 4, 72 * 4))
+    img = cv2.imread(fileName)
+    # img = cv2.resize(img, (128 * 4, 72 * 4))
     img = grabCut(img)
-    cv2.imshow('Photo', img)
+    cv2.imshow('outputOfGrabCutIMG', img)
     cv2.waitKey()
-    myImage = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    plt.imshow(myImage)
-    plt.show()
+    cv2.imwrite('outputOfGrabCutIMG.jpg', img)
 
 
 def testGrabCutOnWebcam():
@@ -48,9 +46,11 @@ def testGrabCutOnWebcam():
         ret, img = cap.read()
         if ret:
             img = cv2.resize(img, (128 * 4, 72 * 4))
+            originalIMG = img.copy()
             img = grabCut(img)
 
-            cv2.imshow('AI PROJECT :)', img)
+            cv2.imshow('GRABCut Output', img)
+            cv2.imshow('Original IMG', originalIMG)
 
             # Press Q on keyboard to  exit
             if cv2.waitKey(25) & 0xFF == ord('q'):
@@ -65,9 +65,9 @@ def testGrabCutOnWebcam():
     cv2.destroyAllWindows()
 
 
-def testGrabCutOnVideo():
+def testGrabCutOnVideo(fileName):
     ### Test grabCut on video ###
-    cap = cv2.VideoCapture('resizedHand.avi')
+    cap = cv2.VideoCapture(fileName)
 
     if not cap.isOpened():
         print("Unable to read the file.")
@@ -75,7 +75,7 @@ def testGrabCutOnVideo():
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
 
-    out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 30, (frame_width, frame_height))
+    out = cv2.VideoWriter('outputGrabcut.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 30, (frame_width, frame_height))
 
     while True:
         ret, frame = cap.read()
@@ -176,12 +176,12 @@ def backGrounSubtractor(fileName):
             cv2.imshow('MOG2 Gray', canvas[2])
             cv2.imshow('MOG2 BG', canvas[3])
 
+            # cv2.imshow('original', originalIMG)
             # cv2.imshow('FG Mask', fgMask)
             # cv2.imshow('BLUR Mask', blurMask)
-            # cv2.imshow('IMG Final Grey', finalGrayIMG)
+            # cv2.imshow('IMG Final Gray', finalGrayIMG)
             # cv2.imshow('IMG Final Change Background', finalChangedBG)
         else:
-            pass
             outKNNGray.write(canvas[0])
             outKNNBG.write(canvas[1])
             outMOG2Gray.write(canvas[2])
@@ -192,9 +192,9 @@ def backGrounSubtractor(fileName):
             break
 
 
-# testGrabCutOnImage()
+# testGrabCutOnImage('hand.jpg')
 # testGrabCutOnWebcam()
-# testGrabCutOnVideo()
+# testGrabCutOnVideo('resizedHand.avi')
 
 backGrounSubtractor(0)
 # backGrounSubtractor('resizedHand.avi')
